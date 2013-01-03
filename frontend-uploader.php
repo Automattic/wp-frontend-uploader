@@ -3,7 +3,7 @@
 Plugin Name: UGC Frontend Uploader
 Description: Allow your visitors to upload content and moderate it.
 Author: Rinat Khaziev
-Version: 0.3-dev
+Version: 0.3.1
 Author URI: http://digitallyconscious.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 // Define our paths and urls and bootstrap
-define( 'UGC_VERSION', '0.3-dev' );
+define( 'UGC_VERSION', '0.3.1' );
 define( 'UGC_ROOT' , dirname( __FILE__ ) );
 define( 'UGC_FILE_PATH' , UGC_ROOT . '/' . basename( __FILE__ ) );
 define( 'UGC_URL' , plugins_url( '/', __FILE__ ) );
@@ -41,13 +41,14 @@ class Frontend_Uploader {
 	public $allowed_mime_types;
 	public $html;
 	public $settings;
+	public $ugc_mimes;
 
 	/**
 	 *  Load languages and a bit of paranoia
 	 */
 	function action_init() {
 		load_plugin_textdomain( 'frontend-uploader', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-		$this->allowed_mime_types = apply_filters( 'upload_mimes', get_allowed_mime_types() );
+		$this->allowed_mime_types =  $this->mime_types();
 
 		// Disallow php files no matter what (this is a full list of possible mime types for php scripts)
 		// @todo may be add other executables
@@ -61,6 +62,31 @@ class Frontend_Uploader {
 				unset( $this->allowed_mime_types[$key] );
 			}
 		}
+	}
+
+	/**
+	 * Workaround for allowed mime-types
+	 * @return allowed mime-types
+	 */
+	function mime_types() {
+		$this->ugc_mimes = apply_filters( 'fu_allowed_mime_types', $this->fix_ie_mime_types( wp_get_mime_types() ) );
+		add_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
+		return $this->ugc_mimes;
+	}
+
+	function filter_upload_mimes( $mimes ) {
+		return $this->ugc_mimes;
+	}
+	/**
+	 * Add IE-specific MIME types
+	 * /props mcnasby
+	 * @param  array $mime_types [description]
+	 * @return [type]             [description]
+	 */
+	function fix_ie_mime_types( $mime_types ) {
+		$mime_types['jpg|jpe|jpeg'] = 'image/pjpeg';
+		$mime_types['png|pngg'] = 'image/x-png';
+		return $mime_types;
 	}
 
 	function __construct() {
@@ -141,7 +167,7 @@ class Frontend_Uploader {
 					);
 					$media_ids[] =  media_handle_sideload( $k, intval( $_POST['post_ID'] ), $post_overrides['post_title'], $post_overrides );
 				} else {
-					wp_safe_redirect( add_query_arg( array( 'response' => 'ugc-disallowed_mime_type' ), $_POST['_wp_http_referer'] ) );
+					wp_safe_redirect( add_query_arg( array( 'response' => 'ugc-disallowed_mime_type', 'mime' => $k['type'] ), $_POST['_wp_http_referer'] ) );
 					die;
 				}
 			}
@@ -258,7 +284,7 @@ class Frontend_Uploader {
 
 	function approve_photo() {
 		// check for permissions and id
-		if ( !current_user_can( 'edit_posts' ) || intval( $_GET['id'] ) == 0 || !wp_verify_nonce( 'nonceugphoto', 'upload_ugphoto' ) )
+		if ( !current_user_can( 'edit_posts' ) || intval( $_GET['id'] ) == 0 || !wp_verify_nonce( $_GET['nonceugphoto'], 'upload_ugphoto' ) )
 			wp_safe_redirect( get_admin_url( null, 'upload.php?page=manage_frontend_uploader&error=id_or_perm' ) );
 
 		$post = get_post( $_GET['id'] );
@@ -266,6 +292,7 @@ class Frontend_Uploader {
 		if ( is_object( $post ) && $post->post_status == 'private' ) {
 			$post->post_status = 'inherit';
 			wp_update_post( $post );
+			$this->update_35_gallery_shortcode( $post->post_parent, $post->ID );
 			wp_safe_redirect( get_admin_url( null, 'upload.php?page=manage_frontend_uploader&approved=1' ) );
 		}
 
@@ -382,7 +409,9 @@ class Frontend_Uploader {
 			$class = 'failure';
 			break;
 		case 'ugc-disallowed_mime_type':
-			$title = __( 'This kind of file is not allowed. Please, try again selecting other file.', 'frontend-uploader' );
+			$title = __( 'This kind of file is not allowed. Please, try again selecting other file.', 'frontend-uploader' ) . "\n";
+			if ( isset( $_GET['mime'] ) )
+				$title .= __( 'The file has following MIME-type:', 'frontend-uploader' ) . esc_attr( $_GET['mime'] );
 			$class = 'failure';
 			break;
 		default:
@@ -415,8 +444,23 @@ class Frontend_Uploader {
 	 * This method will search a parent post with a regular expression, and update gallery shortcode with freshly approved attachment ID
 	 * @return [type] [description]
 	 */
-	function update_35_gallery_shortcode() {
+	function update_35_gallery_shortcode( $post_id, $attachment_id ) {
+		global $wp_version;
+		if ( round( $wp_version, 1 ) >= 3.5 && (int) $post_id != 0 ) {
+			$parent = get_post( $post_id );
+			preg_match( '#(?<before>(.*))\[gallery(.*)ids=(\'|")(?<ids>[0-9,]*)(\'|")](?<after>(.*))#ims', $parent->post_content, $matches ) ;
+			if ( isset( $matches['ids'] ) ) {
+				// @todo account for other possible shortcode atts
+				$gallery = '[gallery ids="' . $matches['ids'] . ',' . (int) $attachment_id  .'"]';
+				$post_to_update = array(
+					'ID' => (int) $post_id,
+					'post_content' => $matches['before'] . $gallery . $matches['after']
+				);
+				wp_update_post( $post_to_update );
+			}
 
+		}
+		return;
 	}
 
 }
