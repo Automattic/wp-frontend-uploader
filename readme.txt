@@ -1,8 +1,8 @@
 === Frontend Uploader ===
-Contributors: rinatkhaziev
+Contributors: rinatkhaziev, rfzappala, danielbachhuber
 Tags: frontend, image, images, media, uploader, upload, video, audio, photo, photos, picture, pictures, file
 Requires at least: 3.1
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: 0.3.1
 
 This plugin allows your visitors to upload User Generated Content (media and posts/custom-post-types).
@@ -37,7 +37,7 @@ Use [fu-upload-form form_layout="post_image"] to get default form to upload post
 * Se habla español (Spanish) (props gastonbesada)
 * Мы говорим по-русски (Russian)
 * Nous parlons français (French) (props dapickboy)
-
+* Nous parlons français (Canadian French) (props rfzappala)
 [Fork the plugin on Github](https://github.com/rinatkhaziev/wp-frontend-uploader/)
 
 == Installation ==
@@ -92,7 +92,8 @@ function my_fu_additional_html() {
 
 = 0.4 = 
 
-* Ability to upload posts+files via [fu-upload-form form_layout="post_image|post|image"] where form_layout might be "post_image", "post", or "image". Defaults to "image". /props 
+* Ability to upload posts+files via [fu-upload-form form_layout="post_image|post|image"] where form_layout might be "post_image", "post", or "image". Defaults to "image". /props rfzappala
+* Bugfixes /props danielbachhuber
 
 = 0.3.1 (Jan 3, 2013) =
 
@@ -130,7 +131,7 @@ function my_fu_additional_html() {
 
 = 0.2.1 (August 30, 2012) =
 
-* Added l10n support, added spanish translation. Props gastonbesada
+* Added l10n support, added Spanish translation. Props gastonbesada
 
 = 0.2 (August 15, 2012) =
 
