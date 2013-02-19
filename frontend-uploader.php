@@ -2,7 +2,7 @@
 /*
 Plugin Name: UGC Frontend Uploader
 Description: Allow your visitors to upload content and moderate it.
-Author: Rinat Khaziev
+Author: Rinat Khaziev, Daniel Bachhuber, Ricardo Zappala
 Version: 0.4-working
 Author URI: http://digitallyconscious.com
 
@@ -43,6 +43,7 @@ class Frontend_Uploader {
 	public $html;
 	public $settings;
 	public $ugc_mimes;
+	public $settings_slug;
 
 	/**
 	 *  Load languages and a bit of paranoia
@@ -97,6 +98,7 @@ class Frontend_Uploader {
 	 * Here we go
 	 */
 	function __construct() {
+		$this->settings_slug = 'frontend_uploader_settings';
 		// Hooking to wp_ajax
 		add_action( 'wp_ajax_upload_ugphoto', array( $this, 'upload_content' ) );
 		add_action( 'wp_ajax_nopriv_upload_ugphoto', array( $this, 'upload_content' ) );
@@ -118,8 +120,6 @@ class Frontend_Uploader {
 		add_shortcode( 'textarea', array( $this, 'shortcode_content_parser' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		// Preventing wpautop going crazy on
-		remove_filter( 'the_content', 'wpautop' );
-		add_filter( 'the_content', 'wpautop' , 99 );
 		add_filter( 'the_content', 'shortcode_unautop', 100 );
 		// Hiding not approved attachments from Media Gallery
 		// @since core 3.5-beta-1
@@ -131,8 +131,8 @@ class Frontend_Uploader {
 		// fu_allowed_mime_types should return array of allowed mime types
 		// HTML helper to render HTML elements
 		$this->html = new Html_Helper;
-		$this->settings = get_option( 'frontend_uploader_settings', $this->settings_defaults() );
-
+		$this->settings = get_option( $this->settings_slug, $this->settings_defaults() );
+		register_activation_hook( __FILE__, array( $this, 'activate_plugin' ) );
 	}
 
 	/**
@@ -143,10 +143,23 @@ class Frontend_Uploader {
 	function settings_defaults() {
 		$defaults = array();
 		$settings = Frontend_Uploader_Settings::get_settings_fields();
-		foreach ( $settings['frontend_uploader_settings'] as $setting ) {
+		foreach ( $settings[$this->settings_slug] as $setting ) {
 			$defaults[ $setting['name'] ] = $setting['default'];
 		}
 		return $defaults;
+	}
+
+	function activate_plugin() {
+		$defaults = array();
+		$settings = Frontend_Uploader_Settings::get_settings_fields();
+		foreach ( $settings[$this->settings_slug] as $setting ) {
+			$defaults[ $setting['name'] ] = $setting['default'];
+		}
+		if ( false === $existing_settings = get_option( $this->settings_slug ) ) {
+			update_option( $this->settings_slug, $defaults );
+		} else {
+			update_option( $this->settings_slug, array_merge( $defaults, (array) $existing_settings ) );
+		}
 	}
 
 	/**
@@ -176,26 +189,27 @@ class Frontend_Uploader {
 		if ( $_POST['form_layout'] == "post" || $_POST['form_layout'] == "post_image" ) {
 
 			// first thing we'll do is create the post
+			// @todo remove hardcoded $_POST keys
 			$page = array(
-				'post_type' => 'post',
+				'post_type' =>  isset( $_POST['post_type'] ) && in_array( $_POST['post_type'], get_post_types() ) ? $_POST['post_type'] : 'post',
 				'post_title'    => sanitize_text_field( $_POST['post_title'] ),
-				'post_content'  => sanitize_text_field( $_POST['post_content'] ),
+				'post_content'  => wp_filter_post_kses( $_POST['post_content'] ),
 				'post_status'   => 'private',
 				'post_category' => array( intval( sanitize_text_field( $_POST['post_category'] ) ) )
 			);
 
-			// if the category is valid create the post
+			// If the category is valid create the post or we don't care about categories
 			$allowed_categories = array_filter( explode( ",", str_replace( " ", "",  $this->settings['allowed_categories'] ) ) );
 
 			if ( count( $allowed_categories ) == 0 || in_array( $_POST['post_category'], $allowed_categories ) ) {
 				$pageid = wp_insert_post ( $page );
+				do_action( 'fu_after_create_post', $pageid );
 				// now lets add the author's name as a custom field (if it was used/filled and the post is good)
-				$author_name = filter_var( $_POST['post_author'], FILTER_SANITIZE_STRING );
-				if ( $pageid > 0 && $author_name !="" )
+				$author_name = sanitize_text_field( $_POST['post_author'] );
+				if ( $pageid > 0 && $author_name != "" )
 					add_post_meta( $pageid, 'author_name', $author_name );
-			}
-			else {
-				wp_safe_redirect( add_query_arg( array( 'response' => 'invalid_post' ), $_POST['_wp_http_referer'] ) );
+			} else {
+				wp_safe_redirect( add_query_arg( array( 'response' => 'invalid_post' ), wp_get_referer() ) );
 				exit;
 			}
 
@@ -551,8 +565,16 @@ class Frontend_Uploader {
 				), $atts ) );
 		switch ( $tag ):
 		case 'textarea':
-			$element = $this->html->element( 'label', $description . $this->html->element( 'textarea', '', array( 'name' => $name, 'id' => $id, 'class' => $class ) ), array( 'for' => $id ), false );
-		return $this->html->element( 'div', $element, array( 'class' => 'ugc-input-wrapper' ), false );
+			if ( 'on' == $this->settings['wysiwyg_enabled'] ) {
+				ob_start();
+				wp_editor('', $id, array( 'textarea_name' => $name, 'media_buttons' => false, 'teeny' => true, 'quicktags' => false ) );
+				$tiny = ob_get_clean();
+				$label =  $this->html->element( 'label', $description , array( 'for' => $id ), false );
+				return $this->html->element( 'div', $label . $tiny, array( 'class' => 'ugc-input-wrapper' ), false ) ;
+			} else { 
+				$element = $this->html->element( 'label', $description . $this->html->element( 'textarea', '', array( 'name' => $name, 'id' => $id, 'class' => $class ) ), array( 'for' => $id ), false );
+				return $this->html->element( 'div', $element, array( 'class' => 'ugc-input-wrapper' ), false );
+			}
 		break;
 	case 'input':
 		$atts = array( 'id' => $id, 'class' => $class, 'multiple' => $multiple );
@@ -591,7 +613,7 @@ class Frontend_Uploader {
 					'form_layout' => ''
 				), $atts ) );
 		global $post;
-		if ( $form_layout != "post" && $form_layout != "post_image" ) $form_layout="image";
+		if ( $form_layout != "post" && $form_layout != "post_image" ) $form_layout = "image";
 
 		ob_start();
 ?>
@@ -627,13 +649,13 @@ class Frontend_Uploader {
 				elseif ( $form_layout=="post" )
 					echo do_shortcode( '[textarea name="post_content" class="textarea" id="ug_content" class="required" description="'. $textarea_desc .'"]' );
 				else
-					echo do_shortcode( '[textarea name="caption" class="textarea" id="ug_caption" description="'. $textarea_desc .'"]
+					echo do_shortcode( '[textarea name="caption" class="textarea tinymce-enabled" id="ugcaption" description="'. $textarea_desc .'"]
 									[input type="file" name="photo" id="ug_photo" class="required" description="'. $file_desc .'" multiple=""]' );
 
 				if ( isset( $this->settings['show_author'] )  && $this->settings['show_author'] )
 					echo do_shortcode ( '[input type="text" name="post_author" id="ug_post_author" description="' . __( 'Author', 'frontend-uploader' ) . '" class=""]' );
 
-				if ( $form_layout=="post_image" or $form_layout=="image" )
+				if ( $form_layout == "post_image" or $form_layout == "image" )
 					echo do_shortcode ( '[input type="text" name="post_credit" id="ug_post_credit" description="' . __( 'Credit', 'frontend-uploader' ) . '" class=""]' );
 
 				echo do_shortcode ( '[input type="submit" class="btn" value="'. $submit_button .'"]' );
@@ -703,9 +725,9 @@ class Frontend_Uploader {
 	 * Enqueue our assets
 	 */
 	function enqueue_scripts() {
-
 		wp_enqueue_style( 'frontend-uploader', UGC_URL . 'lib/css/frontend-uploader.css' );
 		wp_enqueue_script( 'jquery-validate', '//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js', array( 'jquery' ) );
+		wp_enqueue_script( 'fu-tiny-mce', home_url( WPINC . '/js/tinymce/tiny_mce.js' ) );
 		wp_enqueue_script( 'frontend-uploader-js', UGC_URL . 'lib/js/frontend-uploader.js', array( 'jquery', 'jquery-validate' ) );
 
 		// Include localization strings for default messages of validation plugin
@@ -728,7 +750,8 @@ class Frontend_Uploader {
 	 */
 	function update_35_gallery_shortcode( $post_id, $attachment_id ) {
 		global $wp_version;
-		if ( round( $wp_version, 1 ) >= 3.5 && (int) $post_id != 0 ) {
+
+		if ( version_compare( $wp_version, '3.5', '>=')  && (int) $post_id != 0 ) {
 			$parent = get_post( $post_id );
 			preg_match( '#(?<before>(.*))\[gallery(.*)ids=(\'|")(?<ids>[0-9,]*)(\'|")](?<after>(.*))#ims', $parent->post_content, $matches ) ;
 			if ( isset( $matches['ids'] ) ) {
