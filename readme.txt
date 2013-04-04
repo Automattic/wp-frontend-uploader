@@ -2,8 +2,8 @@
 Contributors: rinatkhaziev, rfzappala, danielbachhuber
 Tags: frontend, image, images, media, uploader, upload, video, audio, photo, photos, picture, pictures, file
 Requires at least: 3.3
-Tested up to: 3.6-alpha-23879
-Stable tag: 0.4.1
+Tested up to: 3.6-beta1
+Stable tag: 0.4.2
 
 This plugin allows your visitors to upload User Generated Content (media and posts/custom-post-types with media).
 
@@ -25,7 +25,7 @@ By default plugin allows all MIME-types that are whitelisted in WordPress. Howev
 
 = New in v0.4 =
 
-Now your visitors are able to upload not only media, but guest posts as well! 
+Now your visitors are able to upload not only media, but guest posts as well!
 Use [fu-upload-form form_layout="post_image"] to get default form to upload post content and images
 Use [fu-upload-form form_layout="post"] to get default form to upload post content
 
@@ -37,6 +37,7 @@ You can also manage UGC for selected custom post types (Please refer to the plug
 * Мы говорим по-русски (Russian)
 * Nous parlons français (French) (props dapickboy)
 * Nous parlons français (Canadian French) (props rfzappala)
+
 [Fork the plugin on Github](https://github.com/rinatkhaziev/wp-frontend-uploader/)
 
 == Installation ==
@@ -92,8 +93,49 @@ function my_fu_additional_html() {
 
 == Frequently Asked Questions ==
 
+= I want to be able to upload mp3, psd, or any other file restricted by default. =
+
+WordPress restricts files that users can upload to certain file extension/MIME-type combinations.
+The trick is that the same file might have several different mime-types based on setup.
+So for any type of file you want to allow you need to look up all possible MIME-types.
+[FileExt](http://filext.com/) is a good place to find MIME-types for specific file extension.
+
+Let's say we want to be able to upload mp3 files.
+
+First we look up all MIME-types for mp3: http://filext.com/file-extension/MP3
+
+Now that we have all possible MIME-types for mp3, we can allow mp3s to be uploaded.
+
+Following code whitelists mp3s, if it makes sense to you, you can modify it for your needs.
+If it confuses you, please don't hesitate to post on support forum.
+Put this in your theme's functions.php
+`add_filter( 'fu_allowed_mime_types', 'my_fu_allowed_mime_types' );
+function my_fu_allowed_mime_types( $mime_types ) {
+	// Array of all possible mp3 mime types
+	// From http://filext.com
+	$mimes = array( 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'audio/x-mp3', 'audio/mpeg3', 'audio/x-mpeg3', 'audio/mpg', 'audio/x-mpg', 'audio/x-mpegaudio' );
+	// Iterate through all mime types and add this specific mime to allow it
+	foreach( $mimes as $mime ) {
+		// Preserve the mime_type
+		$orig_mime = $mime;
+		// Leave only alphanumeric characters (needed for unique array key)
+		preg_replace("/[^0-9a-zA-Z ]/", "", $mime );
+		// Workaround for unique array keys
+		// If you-re going to modify it for your files
+		// Don't forget to change extension in array key
+		// E.g. $mime_types['pdf|pdf_' . $mime ] = $orig_mime
+		$mime_types['mp3|mp3_' . $mime ] = $orig_mime;
+	}
+	return $mime_types;
+}`
+
 
 == Changelog ==
+
+= 0.4.2 (Apr 3, 2013) =
+
+* Minor updates
+* Better readme on how to allow various media files
 
 = 0.4 (Mar 30, 2013) =
 
