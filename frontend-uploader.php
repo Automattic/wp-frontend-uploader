@@ -405,7 +405,6 @@ class Frontend_Uploader {
 					unset( $error[0]['mime'] );
 				$_errors[$key] = join( ',,,', $error[0] );
 			}
-			//var_dump( $_errors ); exit;
 			foreach ( $_errors as $key => $value ) {
 				$errors_formatted[] = "{$key}:{$value}";
 			}
