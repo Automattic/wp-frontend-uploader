@@ -3,7 +3,7 @@
 Plugin Name: Frontend Uploader
 Description: Allow your visitors to upload content and moderate it.
 Author: Rinat Khaziev, Daniel Bachhuber, Ricardo Zappala
-Version: 0.5-working
+Version: 0.5.2
 Author URI: http://digitallyconscious.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 // Define consts and bootstrap and dependencies
-define( 'FU_VERSION', '0.5-working' );
+define( 'FU_VERSION', '0.5.2' );
 define( 'FU_ROOT' , dirname( __FILE__ ) );
 define( 'FU_FILE_PATH' , FU_ROOT . '/' . basename( __FILE__ ) );
 define( 'FU_URL' , plugins_url( '/', __FILE__ ) );
@@ -52,7 +52,7 @@ class Frontend_Uploader {
 	 */
 	function __construct() {
 		// Hooking to wp_ajax
-		// @todo refactor in 0.5
+		// @todo refactor in 0.6
 		add_action( 'wp_ajax_upload_ugphoto', array( $this, 'upload_content' ) );
 		add_action( 'wp_ajax_nopriv_upload_ugphoto', array( $this, 'upload_content' ) );
 		add_action( 'wp_ajax_approve_ugc', array( $this, 'approve_photo' ) );
@@ -85,7 +85,7 @@ class Frontend_Uploader {
 		// HTML helper to render HTML elements
 		$this->html = new Html_Helper;
 
-		$this->is_debug =  defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$this->is_debug = (bool) apply_filters( 'fu_is_debug', defined( 'WP_DEBUG' ) && WP_DEBUG );
 		// Either use default settings if no setting set, or try to merge defaults with existing settings
 		// Needed if new options were added in upgraded version of the plugin
 		$this->settings = array_merge( $this->settings_defaults(), (array) get_option( $this->settings_slug, $this->settings_defaults() ) );
@@ -97,40 +97,38 @@ class Frontend_Uploader {
 	 */
 	function action_init() {
 		load_plugin_textdomain( 'frontend-uploader', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-		$this->mime_types();
-
+		$this->allowed_mime_types = $this->_get_mime_types();
+		add_filter( 'upload_mimes', array( $this, '_get_mime_types' ), 999 );
 	}
 
-	/**
-	 * Workaround for allowed mime-types
-	 *
-	 * @return allowed mime-types
-	 */
-	function mime_types() {
-		// Configuration filter:
-		// fu_allowed_mime_types should return array of allowed mime types (see readme)
-		$this->allowed_mime_types = apply_filters( 'fu_allowed_mime_types', $this->fix_ie_mime_types( get_allowed_mime_types() ) );
-		// Disallow PHP files just in case
-		$no_pasaran = array( 'application/x-php', 'text/x-php', 'text/php', 'application/php', 'application/x-httpd-php', 'application/x-httpd-php-source' );
-		// THEY SHALL NOT PASS
-		foreach ( $no_pasaran as $np )
-			if ( false !== ( $key = array_search( $np, $this->allowed_mime_types ) ) )
-				unset( $this->allowed_mime_types[$key] );
-
-		apply_filters( 'upload_mimes', $this->allowed_mime_types );
-		return $this->allowed_mime_types;
-	}
-
-	/**
-	 * Add IE-specific MIME types
-	 * /props mcnasby
-	 *
-	 * @param array   $mime_types [description]
-	 * @return [type] [description]
-	 */
-	function fix_ie_mime_types( $mime_types ) {
+	function _get_mime_types() {
+		// Grab default mime-types
+		$mime_types = wp_get_mime_types();
+		$fu_mime_types = fu_get_mime_types();
+		// Workaround for IE
 		$mime_types['jpg|jpe|jpeg|pjpg'] = 'image/pjpeg';
 		$mime_types['png|xpng'] = 'image/x-png';
+		// Iterate through default extensions
+		foreach( $fu_mime_types as $extension => $details ) {
+			// Skip if it's not in the settings
+			if ( !in_array( $extension, $this->settings['enabled_files'] ) )
+				continue;
+
+			// Iterate through mime-types for this extension
+			foreach( $details['mimes'] as $ext_mime ) {
+
+				$mime_types[ $extension . '|' . $extension . sanitize_title_with_dashes( $ext_mime ) ] = $ext_mime;
+			}
+		}
+		// Configuration filter: fu_allowed_mime_types should return array of allowed mime types (see readme)
+		$mime_types = apply_filters( 'fu_allowed_mime_types', $mime_types );
+
+		foreach( $mime_types as $ext_key => $mime ) {
+			// Check for php just in case
+			if ( false !== strpos( $mime, 'php') )
+				unset( $mime_types[$ext_key] );
+		}
+
 		return $mime_types;
 	}
 
@@ -175,35 +173,11 @@ class Frontend_Uploader {
 	}
 
 	/**
-	 * Check if the file could be uploaded
-	 *
-	 * @since 0.5
-	 *
-	 * @param  string  $ext  File Extension
-	 * @param  string  $type MIME-type
-	 *
-	 * @return boolean       is the file allowed or not
+	 * Determine if we should autoapprove the submission or not
+	 * @return boolean [description]
 	 */
-	function _is_allowed( $ext, $type ) {
-		$allowed_types = fu_get_mime_types();
-		$allowed_type_keys = array();
-		$is_ext_allowed = false;
-		foreach( $this->allowed_mime_types as $exts => $mime ) {
-			foreach(  (array) explode('|', $exts ) as $ext );
-				array_push( $allowed_type_keys, $ext );
-		}
-
-		$conditions = array(
-			(bool)  ( in_array( $ext, $allowed_type_keys ) ),
-			(bool)  in_array( $type, $this->allowed_mime_types ) || in_array( $type, $allowed_types[$ext] ),
-		);
-
-
-		foreach( $conditions as $condition )
-			if ( false === $condition )
-				return false;
-
-		return true;
+	function _is_public() {
+		return  ( current_user_can( 'read' ) && 'on' == $this->settings['auto_approve_user_files'] ) ||  ( 'on' == $this->settings['auto_approve_any_files'] );
 	}
 
 	/**
@@ -238,9 +212,9 @@ class Frontend_Uploader {
 			}
 
 			preg_match( '/.(?P<ext>[a-zA-Z0-9]+)$/', $k['name'], $ext_match );
-			// Add an error message
-			if ( !isset( $ext_match['ext'] ) || ! $this->_is_allowed( $ext_match['ext'], $k['type'] ) ) {
-				$errors['fu-disallowed-mime-type'][] = array( 'name' => $k['name'], 'mime' => $k['type'] );
+			// Add an error message if MIME-type is not allowed
+			if ( ! in_array( $k['type'], (array) $this->allowed_mime_types ) ) {
+					$errors['fu-disallowed-mime-type'][] = array( 'name' => $k['name'], 'mime' => $k['type'] );
 				continue;
 			}
 
@@ -255,10 +229,9 @@ class Frontend_Uploader {
 				$caption = sanitize_text_field( $_POST['caption'] );
 			elseif ( isset( $_POST['post_content'] ) )
 				$caption = sanitize_text_field( $_POST['post_content'] );
-
 			// @todo remove or refactor
 			$post_overrides = array(
-				'post_status' => 'private',
+				'post_status' => $this->_is_public() ? 'publish' : 'private',
 				'post_title' => isset( $_POST['post_title'] ) && ! empty( $_POST['post_title'] ) ? sanitize_text_field( $_POST['post_title'] ) : 'Unnamed',
 				'post_content' => empty( $caption ) ? __( 'Unnamed', 'frontend-uploader' ) : $caption,
 				'post_excerpt' => empty( $caption ) ? __( 'Unnamed', 'frontend-uploader' ) :  $caption,
@@ -291,7 +264,7 @@ class Frontend_Uploader {
 			'post_type' =>  isset( $_POST['post_type'] ) && in_array( $_POST['post_type'], get_post_types() ) ? $_POST['post_type'] : 'post',
 			'post_title'    => sanitize_text_field( $_POST['post_title'] ),
 			'post_content'  => wp_filter_post_kses( $_POST['post_content'] ),
-			'post_status'   => 'private',
+			'post_status'   => $this->_is_public() ? 'publish' : 'private',
 		);
 
 		// Determine if we have a whitelisted category
@@ -400,11 +373,12 @@ class Frontend_Uploader {
 			// Iterate through key=>value pairs of errors
 			foreach ( $result['errors'] as $key => $error ) {
 				// Do not display mime-types in production
-				
 				if ( !$this->is_debug )
 					unset( $error[0]['mime'] );
+
 				$_errors[$key] = join( ',,,', $error[0] );
 			}
+
 			foreach ( $_errors as $key => $value ) {
 				$errors_formatted[] = "{$key}:{$value}";
 			}
@@ -464,7 +438,7 @@ class Frontend_Uploader {
 	/**
 	 * Approve a media file
 	 *
-	 * @todo refactor in 0.5
+	 * @todo refactor in 0.6
 	 * @return [type] [description]
 	 */
 	function approve_photo() {
@@ -488,7 +462,7 @@ class Frontend_Uploader {
 	/**
 	 *
 	 *
-	 * @todo refactor in 0.5
+	 * @todo refactor in 0.6
 	 * @return [type] [description]
 	 */
 	function approve_post() {
@@ -645,37 +619,38 @@ class Frontend_Uploader {
 			$this->_display_response_notices( $_GET );
 
 		// Parse nested shortcodes
-		if ( $content ):
+		if ( $content ) {
 			echo do_shortcode( $content );
 		// Or render default form
-		else:
+		} else {
 			$textarea_desc = __( 'Description', 'frontend-uploader' );
-		$file_desc = __( 'Your Photo', 'frontend-uploader' );
-		$submit_button = __( 'Submit', 'frontend-uploader' );
+			$file_desc = __( 'Your Photo', 'frontend-uploader' );
+			$submit_button = __( 'Submit', 'frontend-uploader' );
 
-		echo do_shortcode ( '[input type="text" name="post_title" id="ug_post_title" description="' . __( 'Title', 'frontend-uploader' ) . '" class="required"]' );
+			echo do_shortcode ( '[input type="text" name="post_title" id="ug_post_title" description="' . __( 'Title', 'frontend-uploader' ) . '" class="required"]' );
 
-		// here we select the different fields based on the form layout to allow for different types
-		// of uploads (only a file, only a post or a file and post)
+			// here we select the different fields based on the form layout to allow for different types
+			// of uploads (only a file, only a post or a file and post)
 
-		// @todo refactor
-		if ( $form_layout == "post_image" )
-			echo do_shortcode( '[textarea name="post_content" class="textarea" id="ug_content" class="required" description="'. $textarea_desc .'"]
-							    [input type="file" name="photo" id="ug_photo" description="'. $file_desc .'" multiple=""]' );
-		elseif ( $form_layout == "post" )
-			echo do_shortcode( '[textarea name="post_content" class="textarea" id="ug_content" class="required" description="'. $textarea_desc .'"]' );
-		else
-			echo do_shortcode( '[textarea name="caption" class="textarea tinymce-enabled" id="ugcaption" description="'. $textarea_desc .'"]
-									[input type="file" name="photo" id="ug_photo" class="required" description="'. $file_desc .'" multiple=""]' );
+			// @todo refactor
+			if ( $form_layout == "post_image" )
+				echo do_shortcode( '[textarea name="post_content" class="textarea" id="ug_content" class="required" description="'. $textarea_desc .'"]
+								    [input type="file" name="photo" id="ug_photo" description="'. $file_desc .'" multiple=""]' );
+			elseif ( $form_layout == "post" )
+				echo do_shortcode( '[textarea name="post_content" class="textarea" id="ug_content" class="required" description="'. $textarea_desc .'"]' );
+			else
+				echo do_shortcode( '[textarea name="caption" class="textarea tinymce-enabled" id="ugcaption" description="'. $textarea_desc .'"]
+										[input type="file" name="photo" id="ug_photo" class="required" description="'. $file_desc .'" multiple=""]' );
 
-		if ( isset( $this->settings['show_author'] )  && $this->settings['show_author'] )
-			echo do_shortcode ( '[input type="text" name="post_author" id="ug_post_author" description="' . __( 'Author', 'frontend-uploader' ) . '" class=""]' );
+			if ( isset( $this->settings['show_author'] )  && $this->settings['show_author'] )
+				echo do_shortcode ( '[input type="text" name="post_author" id="ug_post_author" description="' . __( 'Author', 'frontend-uploader' ) . '" class=""]' );
 
-		if ( $form_layout == "post_image" || $form_layout == "image" )
-			echo do_shortcode ( '[input type="text" name="post_credit" id="ug_post_credit" description="' . __( 'Credit', 'frontend-uploader' ) . '" class=""]' );
+			if ( $form_layout == "post_image" || $form_layout == "image" )
+				echo do_shortcode ( '[input type="text" name="post_credit" id="ug_post_credit" description="' . __( 'Credit', 'frontend-uploader' ) . '" class=""]' );
 
-		echo do_shortcode ( '[input type="submit" class="btn" value="'. $submit_button .'"]' );
-		endif; ?>
+			echo do_shortcode ( '[input type="submit" class="btn" value="'. $submit_button .'"]' );
+			}
+			?>
 		  <input type="hidden" name="action" value="upload_ugc" />
 		  <input type="hidden" value="<?php echo $post_id ?>" name="post_ID" />
 		  <input type="hidden" value="<?php echo $category; ?>" name="post_category" />
@@ -736,7 +711,7 @@ class Frontend_Uploader {
 			),
 		);
 
-		if ( isset( $map[ $res['response'] ] ) )
+		if ( isset( $res['response'] ) && isset( $map[ $res['response'] ] ) )
 			$output .= $this->_notice_html( $map[ $res['response'] ]['text'] , $map[ $res['response'] ]['class'] );
 
 		if ( !empty( $res['errors' ] ) )
