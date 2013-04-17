@@ -3,7 +3,7 @@
 Plugin Name: Frontend Uploader
 Description: Allow your visitors to upload content and moderate it.
 Author: Rinat Khaziev, Daniel Bachhuber, Ricardo Zappala
-Version: 0.5.2
+Version: 0.5.3
 Author URI: http://digitallyconscious.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 // Define consts and bootstrap and dependencies
-define( 'FU_VERSION', '0.5.2' );
+define( 'FU_VERSION', '0.5.3' );
 define( 'FU_ROOT' , dirname( __FILE__ ) );
 define( 'FU_FILE_PATH' , FU_ROOT . '/' . basename( __FILE__ ) );
 define( 'FU_URL' , plugins_url( '/', __FILE__ ) );
@@ -207,7 +207,6 @@ class Frontend_Uploader {
 
 			// Skip to the next file if upload went wrong
 			if ( $k['tmp_name'] == "" ) {
-				$errors['fu-upload-error'][] = $k['name'];
 				continue;
 			}
 
@@ -372,8 +371,9 @@ class Frontend_Uploader {
 
 			// Iterate through key=>value pairs of errors
 			foreach ( $result['errors'] as $key => $error ) {
+
 				// Do not display mime-types in production
-				if ( !$this->is_debug )
+				if ( !$this->is_debug && isset( $error[0]['mime'] ) )
 					unset( $error[0]['mime'] );
 
 				$_errors[$key] = join( ',,,', $error[0] );

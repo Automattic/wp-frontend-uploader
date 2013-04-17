@@ -3,7 +3,7 @@ Contributors: rinatkhaziev, rfzappala, danielbachhuber
 Tags: frontend, image, images, media, uploader, upload, video, audio, photo, photos, picture, pictures, file
 Requires at least: 3.3
 Tested up to: 3.6-beta1
-Stable tag: 0.5.2
+Stable tag: 0.5.3
 
 This plugin allows your visitors to upload User Generated Content (media and posts/custom-post-types with media).
 
@@ -102,7 +102,7 @@ function my_fu_additional_html() {
 You are able to do that within Frontend Uploader Settings admin page. The settings there cover the most popular extensions/MIME-types.
 The trick is that the same file might have several different mime-types based on setup of server/client.
 If you're experiencing any issues, you can set WP_DEBUG to true in your wp-config.php or put
-`add_filter( 'fu_is_debug', '__return_true' )` in your theme's functions.php to see what MIME-types you are having troubles with.
+`add_filter( 'fu_is_debug', '__return_true' );` in your theme's functions.php to see what MIME-types you are having troubles with.
 
 [FileExt](http://filext.com/) is a good place to find MIME-types for specific file extension.
 
@@ -137,6 +137,10 @@ function my_fu_allowed_mime_types( $mime_types ) {
 
 
 == Changelog ==
+
+= 0.5.3 (Apr 17, 2013) =
+
+* Fixed potential fatal error *
 
 = 0.5.1 (Apr 11, 2013) =
 
