@@ -3,7 +3,7 @@
 Plugin Name: Frontend Uploader
 Description: Allow your visitors to upload content and moderate it.
 Author: Rinat Khaziev, Daniel Bachhuber, Ricardo Zappala
-Version: 0.5.3
+Version: 0.6-working
 Author URI: http://digitallyconscious.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 // Define consts and bootstrap and dependencies
-define( 'FU_VERSION', '0.5.3' );
+define( 'FU_VERSION', '0.6-working' );
 define( 'FU_ROOT' , dirname( __FILE__ ) );
 define( 'FU_FILE_PATH' , FU_ROOT . '/' . basename( __FILE__ ) );
 define( 'FU_URL' , plugins_url( '/', __FILE__ ) );
@@ -68,6 +68,7 @@ class Frontend_Uploader {
 		add_shortcode( 'fu-upload-form', array( $this, 'upload_form' ) );
 		add_shortcode( 'input', array( $this, 'shortcode_content_parser' ) );
 		add_shortcode( 'textarea', array( $this, 'shortcode_content_parser' ) );
+		add_shortcode( 'select', array( $this, 'shortcode_content_parser' ) );
 
 		// Static assets
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -223,7 +224,7 @@ class Frontend_Uploader {
 
 			// Try to set post caption if the field is set on request
 			// Fallback to post_content if the field is not set
-			// @todo remove this in v0.5 when automatic handling of shortcode attributes is implemented
+			// @todo remove this in v0.6 when automatic handling of shortcode attributes is implemented
 			if ( isset( $_POST['caption'] ) )
 				$caption = sanitize_text_field( $_POST['caption'] );
 			elseif ( isset( $_POST['post_content'] ) )
@@ -514,6 +515,7 @@ class Frontend_Uploader {
 					'type' => '',
 					'class' => '',
 					'multiple' => 'false',
+					'values' => '',
 					'wysiwyg_enabled' => false,
 				), $atts );
 		$callback = array( $this, "_render_{$tag}" );
@@ -521,6 +523,11 @@ class Frontend_Uploader {
 			return call_user_func( $callback, $atts );
 	}
 
+	/**
+	 * Input shortcode
+	 * @param  array shortcode attributes
+	 * @return [type]       [description]
+	 */
 	function _render_input( $atts ) {
 		extract( $atts );
 		$atts = array( 'id' => $id, 'class' => $class, 'multiple' => $multiple );
@@ -538,6 +545,11 @@ class Frontend_Uploader {
 		return $this->html->element( 'div', $element, array( 'class' => 'ugc-input-wrapper' ), false );
 	}
 
+	/**
+	 * Textarea shortcode
+	 * @param  array shortcode attributes
+	 * @return [type]       [description]
+	 */
 	function _render_textarea( $atts ) {
 		extract( $atts );
 		// Render WYSIWYG textara
@@ -563,25 +575,53 @@ class Frontend_Uploader {
 		return $this->html->element( 'div', $element, array( 'class' => 'ugc-input-wrapper' ), false );
 	}
 
+	/**
+	 * Checkboxes shortcode
+	 * @param  array shortcode attributes
+	 * @return [type]       [description]
+	 */
 	function _render_checkboxes( $atts ) {
 		extract( $atts );
 		return;
 	}
 
+	/**
+	 * Radio buttons shortcode
+	 * @param  array shortcode attributes
+	 * @return [type]       [description]
+	 */
 	function _render_radio( $atts ) {
 		extract( $atts );
 		return;
 	}
 
+	/**
+	 * Select shortcode
+	 * @param  array shortcode attributes
+	 * @return [type]       [description]
+	 */
 	function _render_select( $atts ) {
 		extract( $atts );
-		return;
+		$atts = array( 'values' => $values );
+		$values = explode( ',', $values );
+		$options = '';
+		//Build options for the list
+		foreach( $values as $option ) {
+			$options .= $this->html->element( 'option', $option, array( 'value' => $option ), false );
+		}
+		//Render select field
+		$element = $this->html->element( 'label', $description . $this->html->element( 'select', $options, array(
+			'name' => $name,
+			'id' => $id,
+			'class' => $class
+		), false ), array( 'for' => $id ), false );
+		return $this->html->element( 'div', $element, array( 'class' => 'ugc-input-wrapper' ), false );
 	}
 
 	/**
 	 * Display the upload post form
 	 *
-	 * @todo Major refactoring for this before releasing 0.5
+	 * @todo Major refactoring for this before releasing 0.6
 	 *
 	 * @param array   $atts    shortcode attributes
 	 * @param string  $content content that is encloded in [fu-upload-form][/fu-upload-form]
@@ -597,17 +637,22 @@ class Frontend_Uploader {
 					'class' => 'validate',
 					'category' => '1',
 					'success_page' => '',
-					'form_layout' => '',
+					'form_layout' => 'image',
 					'post_id' => get_the_ID(),
 					'post_type' => 'post',
 				), $atts ) );
 		$post_id = (int) $post_id;
 
-		if ( $form_layout != "post" && $form_layout != "post_image" )
-			$form_layout = "image";
-
-		if ( $form_layout == 'image' )
-			$title = __( 'Submit a media file', 'frontend-uploader' );
+		switch( $form_layout ) {
+			case 'image':
+			case 'media':
+				$title = __( 'Submit a media file', 'frontend-uploader' );
+			break;
+			case 'post':
+			case 'post_media':
+			break;
+			default:
+		}
 
 		ob_start();
 ?>
@@ -645,12 +690,9 @@ class Frontend_Uploader {
 			if ( isset( $this->settings['show_author'] )  && $this->settings['show_author'] )
 				echo do_shortcode ( '[input type="text" name="post_author" id="ug_post_author" description="' . __( 'Author', 'frontend-uploader' ) . '" class=""]' );
 
-			if ( $form_layout == "post_image" || $form_layout == "image" )
-				echo do_shortcode ( '[input type="text" name="post_credit" id="ug_post_credit" description="' . __( 'Credit', 'frontend-uploader' ) . '" class=""]' );
-
 			echo do_shortcode ( '[input type="submit" class="btn" value="'. $submit_button .'"]' );
 			}
-			?>
+?>
 		  <input type="hidden" name="action" value="upload_ugc" />
 		  <input type="hidden" value="<?php echo $post_id ?>" name="post_ID" />
 		  <input type="hidden" value="<?php echo $category; ?>" name="post_category" />
@@ -739,7 +781,13 @@ class Frontend_Uploader {
 			),
 			'fu-invalid-post' => array(
 				'text' =>__( 'The content you are trying to post is invalid.', 'frontend-uploader' ),
-			)
+			),
+			'fu-error-media' => array(
+				'text' =>__( "Couldn't upload the file", 'frontend-uploader' ),
+			),
+			'fu-error-post' => array(
+				'text' =>__( "Couldn't create the post", 'frontend-uploader' ),
+			),
 		);
 
 		foreach ( $errors_arr as $error ) {
@@ -773,6 +821,7 @@ class Frontend_Uploader {
 		wp_enqueue_script( 'jquery-validate', FU_URL .' lib/js/validate/jquery.validate.js ', array( 'jquery' ) );
 		wp_enqueue_script( 'frontend-uploader-js', FU_URL . 'lib/js/frontend-uploader.js', array( 'jquery', 'jquery-validate' ) );
 		// Include localization strings for default messages of validation plugin
+		// Filter is needed for wordpress.com
 		$wplang = apply_filters( 'fu_wplang', WPLANG );
 		if ( $wplang ) {
 			$lang = explode( '_', $wplang );
@@ -802,24 +851,46 @@ class Frontend_Uploader {
 	 */
 	function update_35_gallery_shortcode( $post_id, $attachment_id ) {
 		global $wp_version;
+		// Bail of wp is older than 3.5
+		if ( version_compare( $wp_version, '3.5', '<' ) )
+			return;
 
-		if ( version_compare( $wp_version, '3.5', '>=' )  && (int) $post_id != 0 ) {
-			$parent = get_post( $post_id );
-			preg_match( '#(?<before>(.*))\[gallery(.*)ids=(\'|")(?<ids>[0-9,]*)(\'|")](?<after>(.*))#ims', $parent->post_content, $matches ) ;
-			if ( isset( $matches['ids'] ) ) {
-				// @todo account for other possible shortcode atts
-				$gallery = '[gallery ids="' . $matches['ids'] . ',' . (int) $attachment_id .'"]';
-				$post_to_update = array(
-					'ID' => (int) $post_id,
-					'post_content' => $matches['before'] . $gallery . $matches['after']
-				);
-				return wp_update_post( $post_to_update );
+		$parent = get_post( $post_id );
+
+		/**
+		 * Parse the post content:
+		 * Before the shorcode,
+		 * Before ids,
+		 * Ids,
+		 * After ids
+		 */
+		preg_match( '#(?<way_before>.*)(?<before>\[gallery(.*))ids=(\'|")(?<ids>[0-9,]*)(\'|")(?<after>.*)#ims', $parent->post_content, $matches ) ;
+
+		// No gallery shortcode, no problem
+		if ( !isset( $matches['ids'] ) )
+			return;
+
+		$content = '';
+		$if_prepend = apply_filters( 'fu_update_gallery_shortcode_prepend', false );
+		// Replace ids element with actual string of ids, adding the new att id
+		$matches['ids'] = $if_prepend ? "ids=\"{$attachment_id},{$matches['ids']}\"" : "ids=\"{$matches['ids']},{$attachment_id}\"";
+		$deconstructed = array( 'way_before', 'before', 'ids', 'after' );
+		// Iterate through match elements and reconstruct the post
+		foreach( $deconstructed as $match_key ) {
+			if ( isset( $matches[$match_key] ) ) {
+				$content .= $matches[$match_key];
 			}
-
 		}
-		return;
+
+		// Update the post
+		$post_to_update = array(
+			'ID' => (int) $post_id,
+			'post_content' => $content,
+		);
+		return wp_update_post( $post_to_update );
 	}
 
 }
 
+global $frontend_uploader;
 $frontend_uploader = new Frontend_Uploader;

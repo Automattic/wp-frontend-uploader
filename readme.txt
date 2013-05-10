@@ -2,7 +2,7 @@
 Contributors: rinatkhaziev, rfzappala, danielbachhuber
 Tags: frontend, image, images, media, uploader, upload, video, audio, photo, photos, picture, pictures, file
 Requires at least: 3.3
-Tested up to: 3.6-beta1
+Tested up to: 3.6-beta2
 Stable tag: 0.5.3
 
 This plugin allows your visitors to upload User Generated Content (media and posts/custom-post-types with media).
@@ -11,15 +11,21 @@ This plugin allows your visitors to upload User Generated Content (media and pos
 
 This plugin gives you an ability to easily accept, moderate and publish user generated content (currently, there are 3 modes: media, post, post + media). The plugin allows you to create a front end form with multiple fields (easily customizable with shortcodes). You can limit which MIME-types are supported for each field. All of the submissions are safely held for moderation in Media/Post/Custom Post Types menu under a special tab "Manage UGC". Review, moderate and publish. It's that easy!
 
-This plugin supports multiple uploads for modern browsers (sorry, no IE). Multiple file uploads are enabled for default form. To use it in your custom shortcode add multiple="" attribute to file shortcode.
+This plugin supports multiple uploads for modern browsers. Multiple file uploads are enabled for default form. To use it in your custom shortcode add multiple="" attribute to file shortcode.
 
 Here's example of default form (you don't need to enter all that if you want to use default form, just use [fu-upload-form]):
 
-[fu-upload-form class="your-class" title="Upload your media"]
+`[fu-upload-form class="your-class" title="Upload your media"]
 [textarea name="caption" class="textarea" id="ug_caption" description="Description (optional)"]
 [input type="file" name="photo" id="ug_photo" class="required" description="Your Photo" multiple=""]
 [input type="submit" class="btn" value="Submit"]
-[/fu-upload-form]
+[/fu-upload-form]`
+
+If you want to customize your form, please refer to Form Customization section.
+
+You can also add select elements to your form like so:
+
+[select name="foo" class="select" id="ug_select" description="Pick a fruit" values="Apple,Banana,Cherry"]
 
 By default plugin allows all MIME-types that are whitelisted in WordPress. However, there's a filter if you need to add some exotic MIME-type. Refer to Other notes -> Configuration filters.
 
@@ -56,6 +62,21 @@ You can also manage UGC for selected custom post types (Please refer to the plug
 == Screenshots ==
 
 1. Screenshot of plugin's UI (It's looks like standard media list table, with slightly better Parent column and additional row action: "Approve")
+
+== Form Customization ==
+
+= [fu-upload-form] parameters =
+
+The form has several parameters that can modify its behavior:
+
+1. 'title' => Headline that will be displayed before the form
+1. 'class' => HTML class of the form, defaults to 'validate'. If you want your form being validated - do not remove validate class
+1. 'category' => ID of category the post should be attached (only in post or post+image mode). The category should be whitelisted in the settings
+1. 'success_page' => URL to redirect on successful submission, defaults to the URL where the form is being displayed
+1. 'form_layout' => There are three different modes: post, post_image, image. Default is image
+1. 'post_id' => ID of the post the image should be attached to. Defaults to current post id
+1. 'post_type' => Any registered whitelisted post type. Defaults to 'post'. Works only in post and post+image modes.
+
 
 == Configuration Filters ==
 
@@ -97,6 +118,13 @@ function my_fu_additional_html() {
 
 == Frequently Asked Questions ==
 
+= I want to customize my form =
+You can include additional elements with a set of shortcodes
+[input]
+[select]
+[textarea]
+
+
 = I want to be allow users to upload mp3, psd, or any other file restricted by default. =
 
 You are able to do that within Frontend Uploader Settings admin page. The settings there cover the most popular extensions/MIME-types.
@@ -115,7 +143,7 @@ Now that we have all possible MIME-types for .3gp, we can allow the files to be 
 Following code whitelists 3gp files, if it makes sense to you, you can modify it for other extensions/mime-types.
 If it confuses you, please don't hesitate to post on support forum.
 Put this in your theme's functions.php
-`add_filter( 'fu_allowed_mime_types', 'my_fu_allowed_mime_types' );`
+`add_filter( 'fu_allowed_mime_types', 'my_fu_allowed_mime_types' );
 function my_fu_allowed_mime_types( $mime_types ) {
 	// Array of 3gp mime types
 	// From http://filext.com (there might be more)
@@ -137,6 +165,9 @@ function my_fu_allowed_mime_types( $mime_types ) {
 
 
 == Changelog ==
+
+
+= 0.6. =
 
 = 0.5.3 (Apr 17, 2013) =
 
