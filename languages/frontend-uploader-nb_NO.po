@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Frontend Uploader 0.6\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/frontend-uploader\n"
 "POT-Creation-Date: 2013-07-05 21:44-0600\n"
-"PO-Revision-Date: 2013-07-05 21:45-0600\n"
+"PO-Revision-Date: 2013-07-11 09:16+0100\n"
 "Last-Translator: Rinat Khaziev <rinat.khaziev@gmail.com>\n"
 "Language-Team: Frontend Uploader <rinat.khaziev@gmail.com>\n"
 "Language: en_US\n"
@@ -21,94 +21,97 @@ msgstr ""
 #: ../frontend-uploader.php:166
 msgid "Frontend Uploader requires WordPress 3.3 or newer. Please upgrade."
 msgstr ""
+"Frontend Uploader krever WordPress 3.3 eller nyere. Vennligst oppgrader."
 
 #: ../frontend-uploader.php:256 ../frontend-uploader.php:257
 msgid "Unnamed"
-msgstr ""
+msgstr "Uten navn"
 
 #: ../frontend-uploader.php:383
 msgid "New content was uploaded on your site"
-msgstr ""
+msgstr "Nytt innhold er lastet opp p&aring; nettsiden din."
 
 #: ../frontend-uploader.php:482 ../frontend-uploader.php:485
 #: ../frontend-uploader.php:489 ../lib/views/manage-ugc-media.tpl.php:2
 msgid "Manage UGC"
-msgstr ""
+msgstr "Administrer UGC"
 
 #: ../frontend-uploader.php:485 ../frontend-uploader.php:489
 #: ../lib/views/manage-ugc-posts.tpl.php:2
 msgid "Manage UGC Posts"
-msgstr ""
+msgstr "Administrer UGC innlegg"
 
 #: ../frontend-uploader.php:705
 msgid "Submit a new post"
-msgstr ""
+msgstr "Send inn et nytt innlegg"
 
 #: ../frontend-uploader.php:719
 msgid "Submit a media file"
-msgstr ""
+msgstr "Send inn mediefil"
 
 #: ../frontend-uploader.php:736
 msgid "Description"
-msgstr ""
+msgstr "Beskrivelse"
 
 #: ../frontend-uploader.php:737
 msgid "Your Media Files"
-msgstr ""
+msgstr "Dine mediefiler"
 
 #: ../frontend-uploader.php:738
 msgid "Submit"
-msgstr ""
+msgstr "Send inn"
 
 #: ../frontend-uploader.php:740
 msgid "Title"
-msgstr ""
+msgstr "Tittel"
 
 #: ../frontend-uploader.php:748
 msgid "Post content or file description"
-msgstr ""
+msgstr "Beskrivelse"
 
 #: ../frontend-uploader.php:753
 msgid "Post content"
-msgstr ""
+msgstr "Send inn innhold"
 
 #: ../frontend-uploader.php:760
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:116
 msgid "Author"
-msgstr ""
+msgstr "Opphavsrett"
 
 #: ../frontend-uploader.php:826
 msgid "Your file was successfully uploaded!"
-msgstr ""
+msgstr "Din fil ble lastet opp!"
 
 #: ../frontend-uploader.php:830
 msgid "Your post was successfully uploaded!"
-msgstr ""
+msgstr "Ditt innlegg ble lastet opp!"
 
 #: ../frontend-uploader.php:834
 msgid "There was an error with your submission"
-msgstr ""
+msgstr "Det oppstod en feil med din innsending"
 
 #: ../frontend-uploader.php:859
 msgid "Security check failed!"
-msgstr ""
+msgstr "Sikkerhetssjekk feilet!"
 
 #: ../frontend-uploader.php:862
 msgid ""
 "This kind of file is not allowed. Please, try again selecting other file."
 msgstr ""
+"Denne filtypen er ikke tillatt. Vennligst pr&oslash;v igjen ved &aring; "
+"velge en annen fil."
 
 #: ../frontend-uploader.php:866
 msgid "The content you are trying to post is invalid."
-msgstr ""
+msgstr "Innholdet du pr&oslash;ver &aring; laste opp er ugyldig."
 
 #: ../frontend-uploader.php:869
 msgid "Couldn't upload the file"
-msgstr ""
+msgstr "Kunne ikke laste opp fil"
 
 #: ../frontend-uploader.php:872
 msgid "Couldn't create the post"
-msgstr ""
+msgstr "Kunne ikke lage innlegget"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:82
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:296
@@ -116,125 +119,125 @@ msgstr ""
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:94
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:155
 msgid "Delete Permanently"
-msgstr ""
+msgstr "Slett permanent"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:84
 msgid "Attach to a post"
-msgstr ""
+msgstr "Legg ved innlegg"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:107
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:120
 msgid "No media attachments found."
-msgstr ""
+msgstr "Ingen mediafiler funnet."
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:171
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:184
 #, php-format
 msgid "Edit \"%s\""
-msgstr ""
+msgstr "Rediger \"%s\""
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:216
 msgid "No Tags"
-msgstr ""
+msgstr "Ingen tagger"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:231
 msgid "Unpublished"
-msgstr ""
+msgstr "Opphev publisering"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:233
 msgid "Y/m/d g:i:s A"
-msgstr ""
+msgstr "d/m/Y H:i:s"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:238
 #, php-format
 msgid "%s from now"
-msgstr ""
+msgstr "%s fra n&aring;"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:240
 #, php-format
 msgid "%s ago"
-msgstr ""
+msgstr "%s siden"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:242
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:258
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:356
 msgid "Y/m/d"
-msgstr ""
+msgstr "d/m/Y"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:263
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:363
 msgid "(Unattached)"
-msgstr ""
+msgstr "(Frakoblet)"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:290
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:304
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:143
 msgid "Edit"
-msgstr ""
+msgstr "Rediger"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:293
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:309
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:153
 msgid "Trash"
-msgstr ""
+msgstr "Legg i papirkurv"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:298
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:321
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:158
 #, php-format
 msgid "View \"%s\""
-msgstr ""
+msgstr "Vis \"%s\""
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:298
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:321
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:158
 msgid "View"
-msgstr ""
+msgstr "Vis"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:300
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:364
 msgid "Attach"
-msgstr ""
+msgstr "Legg ved"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:307
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:151
 msgid "Restore"
-msgstr ""
+msgstr "Gjenopprett"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:316
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:146
 msgid "Approve"
-msgstr ""
+msgstr "Godkjenn"
 
 #: ../lib/php/class-frontend-uploader-wp-media-list-table.php:358
 msgid "Re-Attach"
-msgstr ""
+msgstr "Legg ved igjen"
 
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:151
 msgid "Restore this item from the Trash"
-msgstr ""
+msgstr "Gjenopprett fra papirkurv"
 
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:153
 msgid "Move this item to the Trash"
-msgstr ""
+msgstr "Flytt til papirkurv"
 
 #: ../lib/php/class-frontend-uploader-wp-posts-list-table.php:155
 msgid "Delete this item permanently"
-msgstr ""
+msgstr "Slett permanent"
 
 #: ../lib/php/frontend-uploader-settings.php:47
 msgid "Frontend Uploader Settings"
-msgstr ""
+msgstr "Frontend Uploader innstillinger"
 
 #: ../lib/php/frontend-uploader-settings.php:54
 #: ../lib/php/settings-api/procedural-example.php:20
 #: ../lib/php/settings-api/settings-api.php:48
 msgid "Basic Settings"
-msgstr ""
+msgstr "Grunnleggende innstillinger"
 
 #: ../lib/php/frontend-uploader-settings.php:71
 msgid "Notify site admins"
-msgstr ""
+msgstr "Varsle nettstedets administrator"
 
 #: ../lib/php/frontend-uploader-settings.php:72
 #: ../lib/php/frontend-uploader-settings.php:102
@@ -242,65 +245,65 @@ msgstr ""
 #: ../lib/php/frontend-uploader-settings.php:132
 #: ../lib/php/frontend-uploader-settings.php:139
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: ../lib/php/frontend-uploader-settings.php:78
 msgid "Admin Notification"
-msgstr ""
+msgstr "Administrator varsling"
 
 #: ../lib/php/frontend-uploader-settings.php:79
 msgid "Message that admin will get on new file upload"
-msgstr ""
+msgstr "Varslingen administrator f&aring;r ved opplasting av nytt innhold"
 
 #: ../lib/php/frontend-uploader-settings.php:86
 msgid "Notification email"
-msgstr ""
+msgstr "Varsel e-post"
 
 #: ../lib/php/frontend-uploader-settings.php:87
 msgid "Leave blank to use site admin email"
-msgstr ""
+msgstr "La st&aring; tom for &aring; varsle nettstedets administrator e-post"
 
 #: ../lib/php/frontend-uploader-settings.php:94
 msgid "Allowed categories"
-msgstr ""
+msgstr "Tillatte kategorier"
 
 #: ../lib/php/frontend-uploader-settings.php:95
 msgid "Comma separated IDs (leave blank for all)"
-msgstr ""
+msgstr "Kommadelte ID'er (la st&aring; tom for alle)"
 
 #: ../lib/php/frontend-uploader-settings.php:101
 msgid "Show author field"
-msgstr ""
+msgstr "Vis opphavsrett felt"
 
 #: ../lib/php/frontend-uploader-settings.php:108
 msgid "Enable Frontend Uploader for the following post types"
-msgstr ""
+msgstr "Tillat Frontend Uploader for f&oslash;lgende innleggstyper"
 
 #: ../lib/php/frontend-uploader-settings.php:116
 msgid "Enable visual editor for textareas"
-msgstr ""
+msgstr "Tillat visuell tekstredigerer for tekstfelt"
 
 #: ../lib/php/frontend-uploader-settings.php:123
 msgid "Allow following files to be uploaded"
-msgstr ""
+msgstr "Tillat f&oslash;lgende filer &aring; bli lastet opp"
 
 #: ../lib/php/frontend-uploader-settings.php:131
 msgid "Auto-approve registered users files"
-msgstr ""
+msgstr "Godkjenn registrerte brukeres filer automatisk"
 
 #: ../lib/php/frontend-uploader-settings.php:138
 msgid "Auto-approve any files"
-msgstr ""
+msgstr "Godkjenn alle filer automatisk"
 
 #: ../lib/php/settings-api/procedural-example.php:24
 #: ../lib/php/settings-api/settings-api.php:52
 msgid "Advanced Settings"
-msgstr ""
+msgstr "Avanserte innstillinger"
 
 #: ../lib/php/settings-api/procedural-example.php:28
 #: ../lib/php/settings-api/settings-api.php:56
 msgid "Other Settings"
-msgstr ""
+msgstr "Andre innstillinger"
 
 #: ../lib/php/settings-api/procedural-example.php:36
 #: ../lib/php/settings-api/procedural-example.php:104
@@ -308,7 +311,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:141
 #: ../lib/php/settings-api/settings-api.php:210
 msgid "Text Input"
-msgstr ""
+msgstr "Tekst inndata"
 
 #: ../lib/php/settings-api/procedural-example.php:37
 #: ../lib/php/settings-api/procedural-example.php:105
@@ -317,7 +320,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:142
 #: ../lib/php/settings-api/settings-api.php:211
 msgid "Text input description"
-msgstr ""
+msgstr "Tekst inndata beskrivelse"
 
 #: ../lib/php/settings-api/procedural-example.php:43
 #: ../lib/php/settings-api/procedural-example.php:111
@@ -326,7 +329,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:148
 #: ../lib/php/settings-api/settings-api.php:217
 msgid "Textarea Input"
-msgstr ""
+msgstr "Tekstfelt inndata"
 
 #: ../lib/php/settings-api/procedural-example.php:44
 #: ../lib/php/settings-api/procedural-example.php:112
@@ -335,7 +338,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:149
 #: ../lib/php/settings-api/settings-api.php:218
 msgid "Textarea description"
-msgstr ""
+msgstr "Tekstfelt beskrivelse"
 
 #: ../lib/php/settings-api/procedural-example.php:49
 #: ../lib/php/settings-api/procedural-example.php:117
@@ -344,7 +347,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:154
 #: ../lib/php/settings-api/settings-api.php:223
 msgid "Checkbox"
-msgstr ""
+msgstr "Avkryssningsboks"
 
 #: ../lib/php/settings-api/procedural-example.php:50
 #: ../lib/php/settings-api/procedural-example.php:118
@@ -353,7 +356,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:155
 #: ../lib/php/settings-api/settings-api.php:224
 msgid "Checkbox Label"
-msgstr ""
+msgstr "Avkryssningsboks merke"
 
 #: ../lib/php/settings-api/procedural-example.php:55
 #: ../lib/php/settings-api/procedural-example.php:123
@@ -362,7 +365,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:160
 #: ../lib/php/settings-api/settings-api.php:229
 msgid "Radio Button"
-msgstr ""
+msgstr "Radioknapp"
 
 #: ../lib/php/settings-api/procedural-example.php:56
 #: ../lib/php/settings-api/procedural-example.php:124
@@ -371,7 +374,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:161
 #: ../lib/php/settings-api/settings-api.php:230
 msgid "A radio button"
-msgstr ""
+msgstr "En radioknapp"
 
 #: ../lib/php/settings-api/procedural-example.php:65
 #: ../lib/php/settings-api/procedural-example.php:134
@@ -380,7 +383,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:171
 #: ../lib/php/settings-api/settings-api.php:239
 msgid "Multile checkbox"
-msgstr ""
+msgstr "Flervalg avkryssningsboks"
 
 #: ../lib/php/settings-api/procedural-example.php:66
 #: ../lib/php/settings-api/procedural-example.php:135
@@ -389,7 +392,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:172
 #: ../lib/php/settings-api/settings-api.php:240
 msgid "Multi checkbox description"
-msgstr ""
+msgstr "Flervalgs avkryssningsboks beskrivelse"
 
 #: ../lib/php/settings-api/procedural-example.php:77
 #: ../lib/php/settings-api/procedural-example.php:147
@@ -398,7 +401,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:184
 #: ../lib/php/settings-api/settings-api.php:251
 msgid "A Dropdown"
-msgstr ""
+msgstr "En rullgardinmeny"
 
 #: ../lib/php/settings-api/procedural-example.php:78
 #: ../lib/php/settings-api/procedural-example.php:148
@@ -407,7 +410,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:185
 #: ../lib/php/settings-api/settings-api.php:252
 msgid "Dropdown description"
-msgstr ""
+msgstr "Rullgardinmeny beskrivelse"
 
 #: ../lib/php/settings-api/procedural-example.php:88
 #: ../lib/php/settings-api/procedural-example.php:157
@@ -416,7 +419,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:194
 #: ../lib/php/settings-api/settings-api.php:261
 msgid "Password"
-msgstr ""
+msgstr "Passord"
 
 #: ../lib/php/settings-api/procedural-example.php:89
 #: ../lib/php/settings-api/procedural-example.php:158
@@ -425,7 +428,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:195
 #: ../lib/php/settings-api/settings-api.php:262
 msgid "Password description"
-msgstr ""
+msgstr "Passord beskrivelse"
 
 #: ../lib/php/settings-api/procedural-example.php:95
 #: ../lib/php/settings-api/procedural-example.php:164
@@ -434,7 +437,7 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:201
 #: ../lib/php/settings-api/settings-api.php:268
 msgid "File"
-msgstr ""
+msgstr "Fil"
 
 #: ../lib/php/settings-api/procedural-example.php:96
 #: ../lib/php/settings-api/procedural-example.php:165
@@ -443,64 +446,64 @@ msgstr ""
 #: ../lib/php/settings-api/settings-api.php:202
 #: ../lib/php/settings-api/settings-api.php:269
 msgid "File description"
-msgstr ""
+msgstr "Fil beskrivelse"
 
 #: ../lib/php/settings-api/settings-api.php:72
 msgid "Text Input (integer validation)"
-msgstr ""
+msgstr "Tekst inndata (integer validering)"
 
 #: ../lib/views/manage-ugc-media.tpl.php:5
 msgid "You do not have permission to upload files."
-msgstr ""
+msgstr "Du har ikke tillatelse til &aring; laste opp filer."
 
 #: ../lib/views/manage-ugc-media.tpl.php:16
 #: ../lib/views/manage-ugc-posts.tpl.php:17
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
-msgstr ""
+msgstr "S&oslash;k etter resultater for &#8220;%s&#8221;"
 
 #: ../lib/views/manage-ugc-media.tpl.php:22
 #: ../lib/views/manage-ugc-media.tpl.php:52
 #: ../lib/views/manage-ugc-posts.tpl.php:23
 #: ../lib/views/manage-ugc-posts.tpl.php:53
 msgid "Media attachment updated."
-msgstr ""
+msgstr "Medievedlegg oppdatert."
 
 #: ../lib/views/manage-ugc-media.tpl.php:39
 #: ../lib/views/manage-ugc-media.tpl.php:55
 #: ../lib/views/manage-ugc-posts.tpl.php:40
 #: ../lib/views/manage-ugc-posts.tpl.php:56
 msgid "Undo"
-msgstr ""
+msgstr "Angre"
 
 #: ../lib/views/manage-ugc-media.tpl.php:53
 #: ../lib/views/manage-ugc-posts.tpl.php:54
 msgid "Media permanently deleted."
-msgstr ""
+msgstr "Media slettet permanent."
 
 #: ../lib/views/manage-ugc-media.tpl.php:54
 #: ../lib/views/manage-ugc-posts.tpl.php:55
 msgid "Error saving media attachment."
-msgstr ""
+msgstr "Feil ved lagring av medievedlegg."
 
 #: ../lib/views/manage-ugc-media.tpl.php:55
 #: ../lib/views/manage-ugc-posts.tpl.php:56
 msgid "Media moved to the trash."
-msgstr ""
+msgstr "Media flyttet til papirkurv."
 
 #: ../lib/views/manage-ugc-media.tpl.php:56
 #: ../lib/views/manage-ugc-posts.tpl.php:57
 msgid "Media restored from the trash."
-msgstr ""
+msgstr "Media gjenopprettet fra papirkurv."
 
 #: ../lib/views/manage-ugc-media.tpl.php:71
 msgid "Search Media"
-msgstr ""
+msgstr "S&oslah;k media"
 
 #: ../lib/views/manage-ugc-posts.tpl.php:5
 msgid "You do not have permission to publish posts."
-msgstr ""
+msgstr "Du har ikke tillatelse til &aring; publisere innlegg."
 
 #: ../lib/views/manage-ugc-posts.tpl.php:72
 msgid "Search Posts"
-msgstr ""
+msgstr "S&oslah;k etter innlegg"

@@ -1,9 +1,10 @@
 === Frontend Uploader ===
-Contributors: rinatkhaziev, rfzappala, danielbachhuber
+Contributors: rinatkhaziev, danielbachhuber
+Donate link: http://digitallyconscious.com/my-wordpress-plugins/
 Tags: frontend, image, images, media, uploader, upload, video, audio, photo, photos, picture, pictures, file
 Requires at least: 3.3
-Tested up to: 3.6-beta2
-Stable tag: 0.5.3
+Tested up to: 3.6-RC2
+Stable tag: 0.5.8.1
 
 This plugin allows your visitors to upload User Generated Content (media and posts/custom-post-types with media).
 
@@ -13,21 +14,9 @@ This plugin gives you an ability to easily accept, moderate and publish user gen
 
 This plugin supports multiple uploads for modern browsers. Multiple file uploads are enabled for default form. To use it in your custom shortcode add multiple="" attribute to file shortcode.
 
-Here's example of default form (you don't need to enter all that if you want to use default form, just use [fu-upload-form]):
+If you want to customize your form, please refer to FAQ section.
 
-`[fu-upload-form class="your-class" title="Upload your media"]
-[textarea name="caption" class="textarea" id="ug_caption" description="Description (optional)"]
-[input type="file" name="photo" id="ug_photo" class="required" description="Your Photo" multiple=""]
-[input type="submit" class="btn" value="Submit"]
-[/fu-upload-form]`
-
-If you want to customize your form, please refer to Form Customization section.
-
-You can also add select elements to your form like so:
-
-[select name="foo" class="select" id="ug_select" description="Pick a fruit" values="Apple,Banana,Cherry"]
-
-By default plugin allows all MIME-types that are whitelisted in WordPress. However, there's a filter if you need to add some exotic MIME-type. Refer to Other notes -> Configuration filters.
+By default plugin allows all MIME-types that are whitelisted in WordPress. However, there's a filter if you need to add some exotic MIME-type. Be sure to check out FAQ to get a grasp on how to customize the upload form with actions and filters.
 
 = New in v0.5 =
 
@@ -39,7 +28,7 @@ Now your visitors are able to upload not only media, but guest posts as well!
 Use [fu-upload-form form_layout="post_image"] to get default form to upload post content and images
 Use [fu-upload-form form_layout="post"] to get default form to upload post content
 
-You can also manage UGC for selected custom post types (Please refer to the plugin's settings page). By default, UGC is enabled for posts and attachments. If you want to be able to get any other post types UGC submissions just select desired post types at the plugin's settings page, and pass post_type='my_post_type' to the [fu-upload-form] shortcode
+You can also manage UGC for selected custom post types (Please refer to the plugin's settings page). By default, UGC is enabled for posts and attachments. If you want to be able to get any other post types UGC submissions just select desired post types at the plugin's settings page, and pass post_type='my_post_type' to the [fu-upload-form] shortcode.
 
 = Translations: =
 
@@ -47,6 +36,7 @@ You can also manage UGC for selected custom post types (Please refer to the plug
 * Мы говорим по-русски (Russian)
 * Nous parlons français (French) (props dapickboy)
 * Nous parlons français (Canadian French) (props rfzappala)
+* Vi snakker norsk (Norwegian) (props André Langseth)
 
 [Fork the plugin on Github](https://github.com/rinatkhaziev/wp-frontend-uploader/)
 
@@ -63,11 +53,11 @@ You can also manage UGC for selected custom post types (Please refer to the plug
 
 1. Screenshot of plugin's UI (It's looks like standard media list table, with slightly better Parent column and additional row action: "Approve")
 
-== Form Customization ==
+== Frequently Asked Questions ==
 
-= [fu-upload-form] parameters =
+= Shortcode parameters =
 
-The form has several parameters that can modify its behavior:
+The [fu-upload-form] shortcode has several parameters that can modify its behavior:
 
 1. 'title' => Headline that will be displayed before the form
 1. 'class' => HTML class of the form, defaults to 'validate'. If you want your form being validated - do not remove validate class
@@ -77,8 +67,65 @@ The form has several parameters that can modify its behavior:
 1. 'post_id' => ID of the post the image should be attached to. Defaults to current post id
 1. 'post_type' => Any registered whitelisted post type. Defaults to 'post'. Works only in post and post+image modes.
 
+= Example of default media upload form =
+Here's example of default form (you don't need to enter all that if you want to use default form, just use [fu-upload-form]):
 
-== Configuration Filters ==
+`[fu-upload-form class="your-class" title="Upload your media"]
+[input type="text" name="post_title" id="title" class="required" description="Title" multiple=""]
+[textarea name="post_content" class="textarea" id="ug_caption" description="Description (optional)"]
+[input type="file" name="photo" id="ug_photo" class="required" description="Your Photo" multiple=""]
+[input type="submit" class="btn" value="Submit"]
+[/fu-upload-form]`
+
+= I want to customize my form =
+You can include additional elements with a set of shortcodes
+[input type="text" name="post_title" id="title" class="required" description="Title" multiple=""]
+[select name="foo" class="select" id="ug_select" description="Pick a fruit" values="Apple,Banana,Cherry"]
+[textarea name="post_content" class="textarea" id="ug_caption" description="Description (optional)"]
+
+= I want to be allow users to upload mp3, psd, or any other file restricted by default. =
+You are able to do that within Frontend Uploader Settings admin page. The settings there cover the most popular extensions/MIME-types.
+The trick is that the same file might have several different mime-types based on setup of server/client.
+If you're experiencing any issues, you can set WP_DEBUG to true in your wp-config.php or put
+`add_filter( 'fu_is_debug', '__return_true' );` in your theme's functions.php to see what MIME-types you are having troubles with.
+
+[FileExt](http://filext.com/) is a good place to find MIME-types for specific file extension.
+
+Let's say we want to be able to upload 3gp media files.
+
+First we look up all MIME-types for 3gp: http://filext.com/file-extension/3gp
+
+Now that we have all possible MIME-types for .3gp, we can allow the files to be uploaded.
+
+Following code whitelists 3gp files, if it makes sense to you, you can modify it for other extensions/mime-types.
+If it confuses you, please don't hesitate to post on support forum.
+Put this in your theme's functions.php
+`add_filter( 'fu_allowed_mime_types', 'my_fu_allowed_mime_types' );
+function my_fu_allowed_mime_types( $mime_types ) {
+	// Array of 3gp mime types
+	// From http://filext.com (there might be more)
+	$mimes = array( 'audio/3gpp', 'video/3gpp' );
+	// Iterate through all mime types and add this specific mime to allow it
+	foreach( $mimes as $mime ) {
+		// Preserve the mime_type
+		$orig_mime = $mime;
+		// Leave only alphanumeric characters (needed for unique array key)
+		preg_replace("/[^0-9a-zA-Z ]/", "", $mime );
+		// Workaround for unique array keys
+		// If you-re going to modify it for your files
+		// Don't forget to change extension in array key
+		// E.g. $mime_types['pdf|pdf_' . $mime ] = $orig_mime
+		$mime_types['3gp|3gp_' . $mime ] = $orig_mime;
+	}
+	return $mime_types;
+}`
+
+= Configuration Filters =
+
+= fu_manage_permissions =
+
+By default Frontend Uploader could be managed with 'edit_posts' capability, if you want to change permissions, this is the right filter
+`add_filter( 'fu_manage_permissions', create_function( '$cap', 'return "edit_others_posts"; ) );`
 
 = fu_allowed_mime_types =
 
@@ -116,58 +163,31 @@ function my_fu_additional_html() {
 <?php
 }`
 
-== Frequently Asked Questions ==
-
-= I want to customize my form =
-You can include additional elements with a set of shortcodes
-[input]
-[select]
-[textarea]
-
-
-= I want to be allow users to upload mp3, psd, or any other file restricted by default. =
-
-You are able to do that within Frontend Uploader Settings admin page. The settings there cover the most popular extensions/MIME-types.
-The trick is that the same file might have several different mime-types based on setup of server/client.
-If you're experiencing any issues, you can set WP_DEBUG to true in your wp-config.php or put
-`add_filter( 'fu_is_debug', '__return_true' );` in your theme's functions.php to see what MIME-types you are having troubles with.
-
-[FileExt](http://filext.com/) is a good place to find MIME-types for specific file extension.
-
-Let's say we want to be able to upload 3gp media files.
-
-First we look up all MIME-types for 3gp: http://filext.com/file-extension/3gp
-
-Now that we have all possible MIME-types for .3gp, we can allow the files to be uploaded.
-
-Following code whitelists 3gp files, if it makes sense to you, you can modify it for other extensions/mime-types.
-If it confuses you, please don't hesitate to post on support forum.
-Put this in your theme's functions.php
-`add_filter( 'fu_allowed_mime_types', 'my_fu_allowed_mime_types' );
-function my_fu_allowed_mime_types( $mime_types ) {
-	// Array of 3gp mime types
-	// From http://filext.com (there might be more)
-	$mimes = array( 'audio/3gpp', 'video/3gpp' );
-	// Iterate through all mime types and add this specific mime to allow it
-	foreach( $mimes as $mime ) {
-		// Preserve the mime_type
-		$orig_mime = $mime;
-		// Leave only alphanumeric characters (needed for unique array key)
-		preg_replace("/[^0-9a-zA-Z ]/", "", $mime );
-		// Workaround for unique array keys
-		// If you-re going to modify it for your files
-		// Don't forget to change extension in array key
-		// E.g. $mime_types['pdf|pdf_' . $mime ] = $orig_mime
-		$mime_types['3gp|3gp_' . $mime ] = $orig_mime;
-	}
-	return $mime_types;
-}`
-
-
 == Changelog ==
 
+= 0.6 (Work in progress) =
 
-= 0.6. =
+= 0.5.8 (July 25th, 2013) =
+* Fixed bug with failing nonce check upon single item deletion
+* Introduced 'fu_manage_permissions' filter to alter default permissions for managing UGC
+
+= 0.5.7 (July 5th, 2013) =
+* Determine if post type of uploaded post is allowed in the plugin's settings rather than than in all registered post types
+* If uploadeded post has author set and it's one of the registered users of the blog, post_author is set to that user, otherwise saved as meta
+* Set success value to true if no files were uploaded but post was uplaoded succesfully
+* Add nested shortcodes after default fields, instead of replacing them
+
+
+
+= 0.5.6 (June 26, 2013) =
+* Prevent plugin activation if WP is older than 3.3
+
+= 0.5.5 (June 5, 2013 ) =
+* Added German translation
+
+= 0.5.4 (May 19, 2013) =
+* Fixed bugs with form layouts
+* Better readme and FAQ section
 
 = 0.5.3 (Apr 17, 2013) =
 
