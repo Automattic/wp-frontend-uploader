@@ -123,7 +123,7 @@ class Frontend_Uploader_Settings {
 					'label' => __( 'Allow following files to be uploaded', 'frontend-uploader' ),
 					'desc' => '',
                     'type' => 'multicheck',
-                    'default' => array( 'mp3' => 'mp3', 'doc' => 'doc', 'docx' => 'docx', 'pdf' => 'pdf', 'xls' => 'xls', 'xlsx' => 'xlsx' ),
+                    'default' => array(),
                     'options' => fu_get_exts_descs(),
 				),
 				array(
@@ -136,6 +136,13 @@ class Frontend_Uploader_Settings {
 				array(
 					'name' => 'auto_approve_any_files',
 					'label' => __( 'Auto-approve any files', 'frontend-uploader' ),
+					'desc' => __( 'Yes', 'frontend-uploader' ),
+					'type' => 'checkbox',
+					'default' => '',
+				),
+				array(
+					'name' => 'suppress_default_fields',
+					'label' => __('Suppress default fields', 'frontend-uploader' ),
 					'desc' => __( 'Yes', 'frontend-uploader' ),
 					'type' => 'checkbox',
 					'default' => '',
