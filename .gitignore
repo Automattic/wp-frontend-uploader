@@ -2,3 +2,7 @@
 wp-frontend-uploader.php
 wpcom-helper.php
 .phptidy-cache
+.DS_Store
+.vscode/
+composer.lock
+vendor/

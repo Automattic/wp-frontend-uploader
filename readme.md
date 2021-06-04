@@ -1,15 +1,12 @@
 # Frontend Uploader
 
-[![Build Status Travis](https://travis-ci.org/rinatkhaziev/wp-frontend-uploader.png?branch=master)](https://travis-ci.org/rinatkhaziev/wp-frontend-uploader)
-[![Build Status Magnum](https://magnum-ci.com/status/c411301568676ba1f8108599b63a1dcf.png)](https://github.com/rinatkhaziev/wp-frontend-uploader)
-
 ## Description
 
 This plugin gives you an ability to easily accept, moderate and publish user generated content (currently, there are 3 modes: media, post, post + media). The plugin allows you to create a front end form with multiple fields (easily customizable with shortcodes). You can limit which MIME-types are supported for each field. All of the submissions are safely held for moderation in Media/Post/Custom Post Types menu under a special tab "Manage UGC". Review, moderate and publish. It's that easy!
 
 ## Installation
 
-1. `git clone https://github.com/rinatkhaziev/wp-frontend-uploader.git` in your WP plugins directory
+1. `git clone https://github.com/automattic/wp-frontend-uploader.git` in your WP plugins directory
 1. `git submodule update --init --recursive` in the plugin dir to get dependencies
 1. Activate the plugin
 1. Set the settings

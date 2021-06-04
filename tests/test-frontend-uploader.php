@@ -6,25 +6,14 @@
  * @since 0.5
  *
  */
-class Frontend_Uploader_UnitTestCase extends WP_UnitTestCase {
-	public $fu;
-
-	/**
-	 * Init
-	 * @return [type] [description]
-	 */
-	function setup() {
-		parent::setup();
-		global $frontend_uploader;
-		$this->fu = $frontend_uploader;
-	}
+class Frontend_Uploader_UnitTestCase extends FrontendUploader_TestCase {
 
 	function teardown() {
 	}
 
 	// Check if settings get set up on activation
 	function test_default_settings() {
-		$this->assertNotEmpty( $this->fu->settings );
+		$this->assertNotEmpty( $this->_fu->settings );
 	}
 
 	// Test if the post has gallery shortcode and needs to be updated with the new att id
@@ -37,11 +26,11 @@ class Frontend_Uploader_UnitTestCase extends WP_UnitTestCase {
 	}
 
 	function test_mime_types() {
-		$mimes =  $this->fu->_get_mime_types();
+		$mimes =  $this->_fu->_get_mime_types();
 		$this->assertNotEmpty( $mimes );
 		$this->assertInternalType( 'array', $mimes );
 
-		$this->assertGreaterThan( 0, has_filter( 'upload_mimes',  array( $this->fu, '_get_mime_types' ) ) );
+		$this->assertGreaterThan( 0, has_filter( 'upload_mimes',  array( $this->_fu, '_get_mime_types' ) ) );
 	}
 
 	function test_successful_file_upload() {
