@@ -29,8 +29,6 @@ class Frontend_Uploader_UnitTestCase extends FrontendUploader_TestCase {
 		$mimes =  $this->_fu->_get_mime_types();
 		$this->assertNotEmpty( $mimes );
 		$this->assertInternalType( 'array', $mimes );
-
-		$this->assertGreaterThan( 0, has_filter( 'upload_mimes',  array( $this->_fu, '_get_mime_types' ) ) );
 	}
 
 	function test_successful_file_upload() {
