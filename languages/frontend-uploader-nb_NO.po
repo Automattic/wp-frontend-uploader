@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Frontend Uploader v0.5.8.1\n"
+"Project-Id-Version: Frontend Uploader v0.5.9.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/frontend-uploader\n"
 "POT-Creation-Date: 2013-07-05 21:44-0600\n"
-"PO-Revision-Date: 2013-08-20 02:08:59+0000\n"
+"PO-Revision-Date: 2013-10-29 22:40:39+0000\n"
 "Last-Translator: Rinat Khaziev <rinat.khaziev@gmail.com>\n"
 "Language-Team: Frontend Uploader <rinat.khaziev@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -31,108 +31,108 @@ msgstr "Frontend Uploader krever WordPress 3.3 eller nyere. Vennligst oppgrader.
 msgid "Unnamed"
 msgstr "Uten navn"
 
-#: frontend-uploader.php:391
+#: frontend-uploader.php:395
 #@ frontend-uploader
 msgid "New content was uploaded on your site"
 msgstr "Nytt innhold er lastet opp p&aring; nettsiden din."
 
-#: frontend-uploader.php:490
-#: frontend-uploader.php:493
+#: frontend-uploader.php:494
 #: frontend-uploader.php:497
+#: frontend-uploader.php:501
 #: lib/views/manage-ugc-media.tpl.php:2
 #@ frontend-uploader
 msgid "Manage UGC"
 msgstr "Administrer UGC"
 
-#: frontend-uploader.php:493
 #: frontend-uploader.php:497
+#: frontend-uploader.php:501
 #: lib/views/manage-ugc-posts.tpl.php:2
 #@ frontend-uploader
 msgid "Manage UGC Posts"
 msgstr "Administrer UGC innlegg"
 
-#: frontend-uploader.php:736
+#: frontend-uploader.php:743
 #@ frontend-uploader
 msgid "Submit a new post"
 msgstr "Send inn et nytt innlegg"
 
-#: frontend-uploader.php:749
+#: frontend-uploader.php:760
 #@ frontend-uploader
 msgid "Submit a media file"
 msgstr "Send inn mediefil"
 
-#: frontend-uploader.php:766
+#: frontend-uploader.php:776
 #@ frontend-uploader
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: frontend-uploader.php:767
+#: frontend-uploader.php:777
 #@ frontend-uploader
 msgid "Your Media Files"
 msgstr "Dine mediefiler"
 
-#: frontend-uploader.php:768
+#: frontend-uploader.php:778
 #@ frontend-uploader
 msgid "Submit"
 msgstr "Send inn"
 
-#: frontend-uploader.php:779
+#: frontend-uploader.php:789
 #@ frontend-uploader
 msgid "Title"
 msgstr "Tittel"
 
-#: frontend-uploader.php:798
+#: frontend-uploader.php:808
 #@ frontend-uploader
 msgid "Post content or file description"
 msgstr "Beskrivelse"
 
-#: frontend-uploader.php:818
+#: frontend-uploader.php:828
 #@ frontend-uploader
 msgid "Post content"
 msgstr "Send inn innhold"
 
-#: frontend-uploader.php:827
+#: frontend-uploader.php:842
 #: lib/php/class-frontend-uploader-wp-media-list-table.php:116
 #@ frontend-uploader
 msgid "Author"
 msgstr "Opphavsrett"
 
-#: frontend-uploader.php:896
+#: frontend-uploader.php:960
 #@ frontend-uploader
 msgid "Your file was successfully uploaded!"
 msgstr "Din fil ble lastet opp!"
 
-#: frontend-uploader.php:900
+#: frontend-uploader.php:964
 #@ frontend-uploader
 msgid "Your post was successfully uploaded!"
 msgstr "Ditt innlegg ble lastet opp!"
 
-#: frontend-uploader.php:904
+#: frontend-uploader.php:968
 #@ frontend-uploader
 msgid "There was an error with your submission"
 msgstr "Det oppstod en feil med din innsending"
 
-#: frontend-uploader.php:929
+#: frontend-uploader.php:993
 #@ frontend-uploader
 msgid "Security check failed!"
 msgstr "Sikkerhetssjekk feilet!"
 
-#: frontend-uploader.php:932
+#: frontend-uploader.php:996
 #@ frontend-uploader
 msgid "This kind of file is not allowed. Please, try again selecting other file."
 msgstr "Denne filtypen er ikke tillatt. Vennligst pr&oslash;v igjen ved &aring; velge en annen fil."
 
-#: frontend-uploader.php:936
+#: frontend-uploader.php:1000
 #@ frontend-uploader
 msgid "The content you are trying to post is invalid."
 msgstr "Innholdet du pr&oslash;ver &aring; laste opp er ugyldig."
 
-#: frontend-uploader.php:939
+#: frontend-uploader.php:1003
 #@ frontend-uploader
 msgid "Couldn't upload the file"
 msgstr "Kunne ikke laste opp fil"
 
-#: frontend-uploader.php:942
+#: frontend-uploader.php:1006
 #@ frontend-uploader
 msgid "Couldn't create the post"
 msgstr "Kunne ikke lage innlegget"
@@ -271,7 +271,7 @@ msgstr "Varsle nettstedets administrator"
 #: lib/php/frontend-uploader-settings.php:117
 #: lib/php/frontend-uploader-settings.php:132
 #: lib/php/frontend-uploader-settings.php:139
-#: lib/php/frontend-uploader-settings.php:146
+#: lib/php/frontend-uploader-settings.php:154
 #@ frontend-uploader
 msgid "Yes"
 msgstr "Ja"
@@ -320,11 +320,6 @@ msgstr "Tillat Frontend Uploader for f&oslash;lgende innleggstyper"
 #@ frontend-uploader
 msgid "Enable visual editor for textareas"
 msgstr "Tillat visuell tekstredigerer for tekstfelt"
-
-#: lib/php/frontend-uploader-settings.php:123
-#@ frontend-uploader
-msgid "Allow following files to be uploaded"
-msgstr "Tillat f&oslash;lgende filer &aring; bli lastet opp"
 
 #: lib/php/frontend-uploader-settings.php:131
 #@ frontend-uploader
@@ -468,7 +463,7 @@ msgctxt "column name"
 msgid "Categories"
 msgstr ""
 
-#: lib/php/frontend-uploader-settings.php:145
+#: lib/php/frontend-uploader-settings.php:153
 #@ frontend-uploader
 msgid "Suppress default fields"
 msgstr ""
@@ -546,5 +541,20 @@ msgstr[1] ""
 #: lib/views/manage-ugc-posts.tpl.php:55
 #@ frontend-uploader
 msgid "Error saving Post."
+msgstr ""
+
+#: lib/php/frontend-uploader-settings.php:123
+#@ frontend-uploader
+msgid "Also allow to upload these files (in addition to the ones that WP allows by default)"
+msgstr ""
+
+#: lib/php/frontend-uploader-settings.php:145
+#@ frontend-uploader
+msgid "Default file name"
+msgstr ""
+
+#: lib/php/frontend-uploader-settings.php:146
+#@ frontend-uploader
+msgid "Leave blank to use original file name"
 msgstr ""
 
